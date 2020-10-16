@@ -16,17 +16,18 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, re_path
 
-from blog.views import post_list,post_detail
+from blog.views import PostDetailView, PostListView
 from config.views import links
 from blog_project.custom_site import custom_site
 
 urlpatterns = [
-    path(r'', custom_site.urls),
-    path(r'super_admin/', admin.site.urls),
-    path(r'admin/', custom_site.urls),
-    re_path(r'category/(?P<category_id>\d+)/',post_list),  #django 2 正则re_path或者不使用正则直接指定类型
-    path(r'tag/<int:tag_id>/',post_list),
-    re_path(r'post/(?P<post_id>\d+).html',post_detail),
-    path(r'links/',links),
+    path(r'', PostListView.as_view(),name='index'),
+    path(r'super_admin/', admin.site.urls,name='super-admin'),
+    path(r'admin/', custom_site.urls,name='admin'),
+    path(r'category/<int:category_id>/',PostListView.as_view(),name='category-list'),
+    path(r'tag/<int:tag_id>/',PostListView.as_view(),name='tag-list'),
+    # re_path(r'post/(?P<post_id>\d+).html',post_detail,name='post-detail'), #django 2 正则re_path或者不使用正则直接指定类型
+    path(r'links/',links,name='links'),
+    re_path(r'post/(?P<pk>\d+).html',PostDetailView.as_view(),name='post-detail'),
 
 ]
